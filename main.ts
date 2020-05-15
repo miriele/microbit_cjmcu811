@@ -1,7 +1,5 @@
-basic.showLeds(`
-    . . . . .
-    . # . # .
-    . . . . .
-    # . . . #
-    . # # # .
-    `);
+ namespace foo {
+     export function bar(){
+         
+     }
+ }
