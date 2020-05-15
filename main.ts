@@ -1,4 +1,5 @@
- namespace foo {
+ namespace miriele {
+     //% block
      export function bar(){
          
      }
