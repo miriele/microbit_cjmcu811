@@ -31,6 +31,22 @@ enum CCS811_I2C_ADDRESS
     ADDR_0x5B   = 0x5B
 }
 
+enum CCS811_DRIVE_MODE
+{
+    //% block="None"
+    measDM0     = 0x00, // Idle (Measurements are disabled in this mode)
+    //% block="1 Sec"
+    measDM1     = 0x10, // Constant power mode, IAQ measurement every second
+    //% block="10 Sec"
+    measDM2     = 0x20, // Pulse heating mode IAQ measurement every 10 seconds
+    //% block="60 Sec"
+    measDM3     = 0x30, // Low power pulse heating mode IAQ measurement every 60 seconds
+}
+
+    //Measure Mode Register : INT_DATARDY
+
+    //Measure Mode Register : INT_THRESH
+
 //% color=#33acff icon="\u27BE"
 namespace miriele_cjmcu811
 {
@@ -39,6 +55,9 @@ namespace miriele_cjmcu811
 
     //CCS811 Addresses
     let ccsAddr     = 0x5A
+    
+    //CCS811 DriveMode
+    let ccsDrvMode  = 0x20
     
     //CCS811 Register Map
     const ccsStatus = 0x00  // [1 byte] Status Register
@@ -62,23 +81,11 @@ namespace miriele_cjmcu811
     const ccsReset  = 0xFF  // [4 bytes] If the correct 4 bytes (0x11 0xE5 0x72 0x8A) are written to this register in a single sequence the device will reset
                             // and return to BOOT mode.
 
-    //Measure Mode Register : DRIVE_MODE
-    const measDM0   = 0x00  // Idle (Measurements are disabled in this mode)
-    const measDM1   = 0x10  // Constant power mode, IAQ measurement every second
-    const measDM2   = 0x20  // Pulse heating mode IAQ measurement every 10 seconds
-    const measDM3   = 0x30  // Low power pulse heating mode IAQ measurement every 60 seconds
-//  const measDM4   = 0x40  // Constant power mode, sensor measurement every 250ms
-
-    //Measure Mode Register : INT_DATARDY
-
-    //Measure Mode Register : INT_THRESH
-
-
 	/**
      *  Easy test for ensuring I2C read is working
-     *  comment out : //% weight=1 blockId="hardwareID" block="HWID"
      */
 
+    //% weight=1 blockId="hardwareID" block="HWID"
     export function hardwareID(): number
     {
         let hardwareId = readCCSReg(ccsHi, NumberFormat.UInt8LE)
@@ -161,13 +168,13 @@ namespace miriele_cjmcu811
      * to pull data into Algorithm register every second. 
      */
 
-    //% weight=100 blockId="AppStart" block="CCS811 Start"
+    //% weight=100 blockId="AppStart" block="CJMCU-811 Start"
     export function appStart(): void
     {
         if (appStarted) return;
 
         pins.i2cWriteNumber(ccsAddr, ccsApps, NumberFormat.Int8LE)
-        writeCCSReg(ccsMeas, measDM2)
+        writeCCSReg(ccsMeas, ccsDrvMode)
 
         //init once 
         appStarted = true;
@@ -176,14 +183,18 @@ namespace miriele_cjmcu811
     /**
     * set I2C address
     */
-    //% blockId="AIRQUALITY_SET_ADDRESS" block="set address %addr"
-    //% weight=50 blockGap=8
-    //% parts=airQuality trackArgs=0
+    //% weight=50 blockId="AIRQUALITY_SET_ADDRESS" block="setAddress %addr"
     export function setAddress(addr: CCS811_I2C_ADDRESS)
     {
-        if (ccsAddr != addr)
-        {
-            ccsAddr = addr
-        }
+        ccsAddr = addr
+    }
+
+    /**
+    * set Drive Mode
+    */
+    //% weight=50 blockId="setDriveMode" block="setDriveMode %mode"
+    export function setDriveMode(mode: CCS811_DRIVE_MODE)
+    {
+        ccsDrvMode = mode
     }
 }
