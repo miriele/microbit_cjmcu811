@@ -1,8 +1,7 @@
 /**
-* jinwoo park @ c3coding
+* jinwoo park
 * 18 May 2020
 * https://blog.naver.com/miriele
-* https://www.c3coding.com/
 * 
 * https://github.com/miriele/microbit_cjmcu811
 * 
@@ -81,7 +80,7 @@ namespace miriele_cjmcu811
     const ccsReset  = 0xFF  // [4 bytes] If the correct 4 bytes (0x11 0xE5 0x72 0x8A) are written to this register in a single sequence the device will reset
                             // and return to BOOT mode.
 
-	/**
+    /**
      *  Easy test for ensuring I2C read is working
      */
 
